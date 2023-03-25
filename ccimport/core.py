@@ -133,6 +133,10 @@ def ccimport(source_paths: List[Union[str, Path]],
             build_meta.add_library_paths(pythonlib.parent)
             # libraries.append(pythonlib.stem)
             # libpaths.append(pythonlib.parent)
+    if compat.InMacOS:
+        # pybind11 requires the -undefined dynamic_lookup flag on macOS:
+        # https://pybind11.readthedocs.io/en/stable/compiling.html#building-manually
+        build_meta.add_ldflags("clang++", "-undefined dynamic_lookup")
     python_includes = compat.get_pybind11_includes()
     build_meta.add_global_includes(*python_includes, *GLOBAL_CONFIG.includes)
     # includes.extend(python_includes)
